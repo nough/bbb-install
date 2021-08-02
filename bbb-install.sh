@@ -441,7 +441,9 @@ wait_443() {
 }
 
 get_IP() {
-  if [ ! -z "$IP" ]; then return 0; fi
+  # This function determines the local IP, sets the variable $IP, then attempts to determine external IP and check if external IP reaches the internal IP.
+  # Determine if get_IP has already been called ($IP exists), if so, no need to run again.
+  if [ -n "$IP" ]; then return 0; fi
 
   # Determine local IP
   need_pkg net-tools
@@ -471,7 +473,7 @@ get_IP() {
   fi
 
   # Check if the external IP reaches the internal IP
-  if [ ! -z "$external_ip" ] && [ "$IP" != "$external_ip" ]; then
+  if [ -n "$external_ip" ] && [ "$IP" != "$external_ip" ]; then
     if which nginx; then
       systemctl stop nginx
     fi
